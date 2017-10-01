@@ -76,8 +76,10 @@ public class WeekLabels : Gtk.Revealer {
         update_nr_of_labels (nr_of_weeks);
 
         if (Settings.SavedState.get_default ().show_weeks) {
+            no_show_all = false;
             transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             set_reveal_child (true);
+            show ();
 
             var next = date;
             // Find the beginning of the week which is apparently always a monday
@@ -90,6 +92,8 @@ public class WeekLabels : Gtk.Revealer {
         } else {
             transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             set_reveal_child (false);
+            no_show_all = true;
+            hide ();
         }
     }
 
