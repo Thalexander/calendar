@@ -68,10 +68,16 @@ public class Maya.Model.CalendarModel : Object {
     }
 
     private CalendarModel () {
-        int week_start = Posix.nl_langinfo2 (Posix.NLTime.FIRST_WEEKDAY).data[0];
-        if (week_start >= 1 && week_start <= 7) {
-            week_starts_on = (Maya.Settings.Weekday)week_start-1;
+        week_starts_on = Settings.SavedState.get_default ().week_start;
+        if (week_starts_on == Settings.Weekday.NULL) {
+            int week_start = Posix.nl_langinfo2 (Posix.NLTime.FIRST_WEEKDAY).data[0];
+            if (week_start >= 1 && week_start <= 7) {
+                week_starts_on = (Maya.Settings.Weekday)week_start-1;
+            }
+            Settings.SavedState.get_default ().week_start = week_starts_on;
         }
+        
+        Settings.SavedState.get_default ().changed["week-start"].connect (on_update_week_start);
 
         this.month_start = Util.get_start_of_month (Settings.SavedState.get_default ().get_page ());
         compute_ranges ();
@@ -421,5 +427,10 @@ public class Maya.Model.CalendarModel : Object {
         });
 
         events_removed (source, removed_events.read_only_view);
+    }
+    
+    private void on_update_week_start () {
+        week_starts_on = Settings.SavedState.get_default ().week_start;
+        parameters_changed ();
     }
 }

@@ -70,11 +70,25 @@ public class Header : Gtk.EventBox {
                 } else {
                     show_weeks_menuitem.label = _("Show Week Numbers");
                 }
+                var start_week_menuitem = new Gtk.MenuItem ();
+                if (Settings.SavedState.get_default ().week_start == Settings.Weekday.SUNDAY) {
+                    start_week_menuitem.label = _("Start week on Monday");
+                } else {
+                    start_week_menuitem.label = _("Start week on Sunday");
+                }
 
                 show_weeks_menuitem.activate.connect (() => {
                     Settings.SavedState.get_default ().show_weeks = !Settings.SavedState.get_default ().show_weeks;
                 });
+                start_week_menuitem.activate.connect (() => {
+                    if (Settings.SavedState.get_default ().week_start == Settings.Weekday.SUNDAY) {
+                        Settings.SavedState.get_default ().week_start = Settings.Weekday.MONDAY;
+                    } else {
+                        Settings.SavedState.get_default ().week_start = Settings.Weekday.SUNDAY;
+                    }
+                });
                 menu.add (show_weeks_menuitem);
+                menu.add (start_week_menuitem);
                 menu.show_all ();
                 menu.popup (null, null, null, event.button, event.time);
             }

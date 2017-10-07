@@ -23,7 +23,8 @@ namespace Maya.Settings {
         WEDNESDAY,
         THURSDAY,
         FRIDAY,
-        SATURDAY
+        SATURDAY,
+        NULL
     }
 
     public class MayaSettings : Granite.Services.Settings {

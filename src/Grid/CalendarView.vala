@@ -37,6 +37,7 @@ public class Maya.View.CalendarView : Gtk.Grid {
     private Grid grid { get; private set; }
     private Gtk.Stack stack { get; private set; }
     private Gtk.Grid big_grid { get; private set; }
+    private Settings.Weekday week_start { get; private set; }
 
     public CalendarView () {
         selected_date = Settings.SavedState.get_default ().get_selected ();
@@ -47,6 +48,8 @@ public class Maya.View.CalendarView : Gtk.Grid {
         stack.show_all ();
         stack.expand = true;
 
+        week_start = Settings.SavedState.get_default ().week_start;
+        
         sync_with_model ();
 
         var model = Model.CalendarModel.get_default ();
@@ -158,10 +161,6 @@ public class Maya.View.CalendarView : Gtk.Grid {
 
     /* Indicates the month has changed */
     void on_model_parameters_changed () {
-        var model = Model.CalendarModel.get_default ();
-        if (grid.grid_range != null && model.data_range.equals (grid.grid_range))
-            return; // nothing to do
-
         Idle.add ( () => {
             remove_all_events ();
             sync_with_model ();
@@ -174,9 +173,12 @@ public class Maya.View.CalendarView : Gtk.Grid {
     /* Sets the calendar widgets to the date range of the model */
     void sync_with_model () {
         var model = Model.CalendarModel.get_default ();
-        if (grid.grid_range != null && (model.data_range.equals (grid.grid_range) || grid.grid_range.first_dt.compare (model.data_range.first_dt) == 0))
-            return; // nothing to do
+        if (grid.grid_range != null && (model.data_range.equals (grid.grid_range) || grid.grid_range.first_dt.compare (model.data_range.first_dt) == 0)) {
+            if (week_start == Settings.SavedState.get_default ().week_start)
+                return; // nothing to do
+        }
 
+        week_start = Settings.SavedState.get_default ().week_start;
         DateTime previous_first = null;
         if (grid.grid_range != null)
             previous_first = grid.grid_range.first_dt;

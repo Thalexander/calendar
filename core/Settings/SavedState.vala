@@ -37,6 +37,7 @@ namespace Maya.Settings {
         public int hpaned_position { get; set; }
         public string month_page { get; set; }
         public string selected_day { get; set; }
+        public Weekday week_start { get; set; }
 
         private SavedState () {
             base ("org.pantheon.maya.savedstate");

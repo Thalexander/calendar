@@ -3,6 +3,16 @@
         <value nick="Normal" value="0" />
         <value nick="Maximized" value="1" />
     </enum>
+    <enum id="org.pantheon.maya.savedstate.week-day">
+        <value nick="Sunday" value="0" />
+        <value nick="Monday" value="1" />
+        <value nick="Tuesday" value="2" />
+        <value nick="Wednesday" value="3" />
+        <value nick="Thursday" value="4" />
+        <value nick="Friday" value="5" />
+        <value nick="Saturday" value="6" />
+        <value nick="null" value="7" />
+    </enum>
 
     <schema path="/org/pantheon/maya/settings/" id="org.pantheon.maya.settings" gettext-domain="maya">
         <key name="plugins-disabled" type="as">
@@ -31,6 +41,11 @@
             <default>true</default>
             <summary>Whether or not to show weeknumbers.</summary>
             <description>Whether or not to show weeknumbers.</description>
+        </key>
+        <key name="week-start" enum="org.pantheon.maya.savedstate.week-day">
+            <default>"null"</default>
+            <summary>Which day of the week the calendar starts on.</summary>
+            <description>Which day of the week the calendar starts with.</description>
         </key>
         <key name="month-page" type="s">
             <default>""</default>
