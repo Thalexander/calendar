@@ -38,6 +38,7 @@ public class Maya.View.CalendarView : Gtk.Grid {
     private Gtk.Stack stack { get; private set; }
     private Gtk.Grid big_grid { get; private set; }
     private Settings.Weekday week_start { get; private set; }
+    private GLib.Settings show_weeks;
 
     public CalendarView () {
         selected_date = Settings.SavedState.get_default ().get_selected ();
@@ -69,7 +70,14 @@ public class Maya.View.CalendarView : Gtk.Grid {
             }
         });
 
-        Settings.SavedState.get_default ().changed["show-weeks"].connect (on_show_weeks_changed);
+        if (GLib.SettingsSchemaSource.get_default ().lookup (Util.SHOW_WEEKS_SCHEMA, false) != null) {
+            show_weeks = new GLib.Settings (Util.SHOW_WEEKS_SCHEMA);
+            show_weeks.changed["show-weeks"].connect (on_show_weeks_changed);
+            show_weeks.get_value ("show-weeks");
+        } else {
+            Settings.SavedState.get_default ().changed["show-weeks"].connect (on_show_weeks_changed);
+        }
+        
         events |= Gdk.EventMask.BUTTON_PRESS_MASK;
         events |= Gdk.EventMask.KEY_PRESS_MASK;
         events |= Gdk.EventMask.SCROLL_MASK;
@@ -126,7 +134,7 @@ public class Maya.View.CalendarView : Gtk.Grid {
     void on_show_weeks_changed () {
         var model = Model.CalendarModel.get_default ();
         weeks.update (model.data_range.first_dt, model.num_weeks);
-        if (Settings.SavedState.get_default ().show_weeks == true) {
+        if (Util.show_weeks ()) {
             grid.draw_first_line_column (true);
             header.draw_left_border = true;
         }
